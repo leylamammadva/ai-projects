@@ -24,32 +24,38 @@ The app also shows the exact text that is sent to the AI after redaction, so the
 - **Hallucination check:** every finding must quote a log line. Lines that do not exist in the log are flagged in the UI.
 - **Structured output:** the model must return a typed object (Pydantic schema), not free text.
 - **Less noise:** the prompt asks the model to report repeated identical events (for example many failed logins from one IP) as one finding with the count and time range, and to keep different kinds of events separate.
+- **Careful wording:** the prompt asks the model not to state causes, intent or success unless the log shows it, and to use "likely" or "may" when inferring.
 - **Limits:** file size cap and safe decoding of invalid bytes.
 
 ## Results
-Manual runs with `gemini-2.5-flash` (temperature 0) on the synthetic sample logs. Each log was run once, so these results are indicative, not statistically significant.
+Manual runs with `gemini-2.5-flash` (temperature 0) on the four synthetic sample logs. Each log was run once, so these results are indicative, not statistically significant.
 
 | Log | Observation |
 |-----|-------------|
-| `brute_force_ssh.log` | 5 failed logins (02:11:03 to 02:11:12) were grouped into one finding. The successful root login and the creation of the `backdoor` user were reported separately as Critical. |
+| `brute_force_ssh.log` | The 5 failed logins (02:11:03 to 02:11:12) were grouped into one finding. The successful root login and the creation of the `backdoor` user were reported separately as Critical. |
 | `injection.log` | The embedded instruction was not followed. The model reported it as a High suspicious event and still reported the real Critical unauthorized access attempt. |
+| `ops_incident.log` | Not flagged as an attack. The findings were categorized as availability or performance (disk full, database timeout, connection pool exhausted, service restart). One INFO line (service restart) was reported as a finding, and the model called the restart "unexpected", which the log does not state. |
+| `web_attack.log` | The SQL injection activity and the reconnaissance (`/admin`, `/wp-login.php`, `/.env`) were reported as separate security findings, and the internal health checks were ignored. The failed injection attempts and the request that returned data (HTTP 200, 8841 bytes) were grouped into one Critical finding, and the quoted line was the failed probe (HTTP 500), not the request that best shows the impact. |
 
 Observed weaknesses:
 - Before the grouping rule was added to the prompt, the same failed logins produced four near-identical Medium findings.
-- Severity is not stable between runs: the failed SSH logins were rated Medium in one run and High in another.
+- Severity is not stable between runs: the failed SSH logins were rated Medium in one run and High in another, and the reconnaissance finding was rated High in one run and Medium in another.
 - A single failed login (`invalid credentials`) was rated Medium, which may be too high.
+- An INFO-level line was reported as a finding although the prompt says routine INFO events are not findings.
+- The grounding check only verifies that a quoted line exists in the log, not that it is the line that best supports the finding (see `web_attack.log` above).
 - Resistance to prompt injection rests mainly on code-level controls (`<log>` delimiting, tag neutralization, heuristic detection). The model's behavior is an additional layer, not a guarantee.
 
-## Model comparison
-Run `python -m analyzer.compare` to test models on the sample logs against hand-written expectations (`data/expected.json`).
+Note: these manual runs were done while the prompt was still being adjusted (grouping of repeated events, choice of the quoted line, cautious wording), so some rows may not reflect the final prompt. The sample logs are therefore not an independent test set. All runs will be repeated with the final prompt.
 
-<!-- PASTE THE REAL TABLE FROM results/model_comparison.md HERE AFTER YOU RUN IT -->
+## Model comparison
+`python -m analyzer.compare` scores the models listed in `COMPARE_MODELS` against hand-written expectations (`data/expected.json`). Results are not published yet: the free-tier daily quota was exhausted during testing, and an older model (`gemini-2.5-flash-lite`) is no longer available to new users. Results will be added after a clean run with the final prompt.
 
 ## Limitations
 - Redaction does not detect usernames, hostnames or secrets in free text.
 - The injection warning is a heuristic and can miss cleverly worded attacks.
 - Four synthetic sample logs only: results are indicative, not statistically significant.
 - LLM output can vary between runs, including severity ratings. Findings must be verified by an analyst.
+- The grounding check confirms that a quoted line exists, not that the explanation is correct.
 - Not for production use.
 
 See [docs/assessment.md](docs/assessment.md) for a short applicability assessment for a financial services SOC.

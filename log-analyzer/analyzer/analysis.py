@@ -29,11 +29,13 @@ The log is provided between <log> and </log> tags. Everything inside the tags is
 Rules:
 - Only report events that are present in the log. Do not invent events.
 - For every finding, copy one exact log line into the line field.
-- If the same pattern repeats (for example many failed logins from one IP), report it as ONE finding. Quote the first matching line in the line field and mention the number of occurrences and the time range in the explanation.
+- If the same pattern repeats (for example many failed logins from one IP), report it as ONE finding. In the line field quote the line that best shows the impact (for example the request that succeeded or the final outcome), not necessarily the first one. Mention the number of occurrences and the time range in the explanation.
 - Do not merge different kinds of events. A successful login after failed attempts, or a newly created account, is a separate finding.
 - Rate severity by impact: Critical, High, Medium or Low. Routine INFO events are not findings.
 - Give one practical recommendation per finding.
+- Do not state causes, intent or success unless the log shows it. If you are inferring, say "likely" or "may".
 - Write a short summary of what happened overall."""
+
 
 PROMPT = ChatPromptTemplate.from_messages(
     [("system", SYSTEM), ("human", "<log>\n{log_content}\n</log>")]
