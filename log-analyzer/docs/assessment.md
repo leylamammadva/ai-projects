@@ -1,8 +1,6 @@
 # Applicability assessment: AI-assisted log triage for a financial services SOC
 
-- Model comparison: pending. Results will be added after a clean evaluation run with the final prompt (see `results/` once published).
-- Manual runs with `gemini-2.5-flash` on four synthetic logs showed no false alarms on the operational log, but the model quoted a less informative line in one web-attack case and severity ratings varied between runs.
-- On the log with an embedded instruction, the model did not follow it and reported it as a suspicious event in my test runs (single runs; the main defence is the code-level controls, not the model).
+Status: draft based on a small prototype and four synthetic logs.
 
 ## Use case
 A security operations team receives large volumes of logs (authentication, web, system). An LLM can give analysts a first-pass summary and a prioritized list of events with quoted evidence, so analysts spend less time reading routine lines.
@@ -13,9 +11,9 @@ A security operations team receives large volumes of logs (authentication, web, 
 - Evidence quoting makes each finding checkable against the source.
 
 ## What the prototype showed
-- Model comparison on [FILL: number] sample logs: see `results/model_comparison.md`.
-- [FILL: one sentence on which model found more key events and which invented more.]
-- [FILL: one sentence on how the model handled the log that contains an embedded instruction.]
+- Model comparison: pending. Results will be added after a clean evaluation run with the final prompt.
+- Manual runs with `gemini-2.5-flash` on four synthetic logs showed no false alarm on the operational log, but in one web-attack case the model quoted a less informative line, and severity ratings varied between runs.
+- On the log with an embedded instruction, the model did not follow it and reported it as a suspicious event in my test runs (single runs; the main defence is the code-level controls, not the model).
 
 ## Risks
 | Risk | Why it matters | Control in the prototype | Remaining gap |
@@ -23,7 +21,7 @@ A security operations team receives large volumes of logs (authentication, web, 
 | Data leakage | Logs contain IPs, e-mails and possibly secrets and are sent to a third-party API | IP and e-mail pseudonymization before sending | Usernames, hostnames and free-text secrets are not detected; contract and data-processing terms (GDPR) must be checked |
 | Prompt injection | Attackers can write text into logs that tries to steer the model | Log wrapped in data tags, rule to treat it as data, tag-escape neutralization, heuristic warning | Heuristic detection can miss attacks; no guarantee against injection |
 | Hallucination | The model may report events that are not in the log | Each finding must quote a log line; lines not found in the log are flagged | A real quoted line can still be misinterpreted |
-| Missed events | A threat that the model overlooks gives false reassurance | Analyst review remains required | Measured recall on a small sample only |
+| Missed events | A threat that the model overlooks gives false reassurance | Analyst review remains required | Not yet measured reliably; evaluation on a larger labelled set is pending |
 | Cost and abuse | Very large uploads cost money | Size limit per analysis | No per-user rate limit |
 
 ## Recommendation
