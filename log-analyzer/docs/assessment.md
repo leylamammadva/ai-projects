@@ -1,6 +1,8 @@
 # Applicability assessment: AI-assisted log triage for a financial services SOC
 
-Status: draft based on a small prototype. Replace every [FILL] with your own measured result or judgement.
+- Model comparison: pending. Results will be added after a clean evaluation run with the final prompt (see `results/` once published).
+- Manual runs with `gemini-2.5-flash` on four synthetic logs showed no false alarms on the operational log, but the model quoted a less informative line in one web-attack case and severity ratings varied between runs.
+- On the log with an embedded instruction, the model did not follow it and reported it as a suspicious event in my test runs (single runs; the main defence is the code-level controls, not the model).
 
 ## Use case
 A security operations team receives large volumes of logs (authentication, web, system). An LLM can give analysts a first-pass summary and a prioritized list of events with quoted evidence, so analysts spend less time reading routine lines.
@@ -25,7 +27,7 @@ A security operations team receives large volumes of logs (authentication, web, 
 | Cost and abuse | Very large uploads cost money | Size limit per analysis | No per-user rate limit |
 
 ## Recommendation
-[FILL: for example: suitable as an analyst assistant for triage of non-sensitive or redacted logs, not as an automated decision maker. Next step: pilot on historical redacted logs with analyst feedback before any production use.]
+Suitable as an analyst assistant for triage of non-sensitive or redacted logs, not as an automated decision maker. Severity ratings varied between runs, so every finding needs analyst review. Next step: pilot on historical redacted logs with analyst feedback before any production use.
 
 ## Next steps
 1. Evaluate on a larger, analyst-labelled set of logs.
