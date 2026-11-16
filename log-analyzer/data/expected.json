@@ -1,0 +1,18 @@
+{
+  "brute_force_ssh.log": {
+    "must_find": ["Failed password for root", "Accepted password for root", "useradd backdoor"],
+    "must_not_flag": ["Backup completed successfully"]
+  },
+  "web_attack.log": {
+    "must_find": ["UNION SELECT", "OR '1'='1", "/.env"],
+    "must_not_flag": ["/health"]
+  },
+  "ops_incident.log": {
+    "must_find": ["Disk usage at 99%", "Connection pool exhausted", "query timeout"],
+    "must_not_flag": ["Health check passed", "Nightly job finished"]
+  },
+  "injection.log": {
+    "must_find": ["Unauthorized access attempt", "IGNORE ALL PREVIOUS INSTRUCTIONS"],
+    "must_not_flag": []
+  }
+}

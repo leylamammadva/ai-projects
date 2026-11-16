@@ -1,50 +1,22 @@
 # 🤖 AI Projects
 
+Small AI projects built with Python, LangChain and the Gemini API.
+
 ## 🔍 AI Log Analyzer
-Intelligent log analysis tool powered by Google Gemini AI and LangChain.
-Automatically detects critical issues, security threats, and provides actionable recommendations.
-
-**Tech:** Python, LangChain, Gemini API, Streamlit
-
-### Features
-- Upload any `.log` or `.txt` file
-- Detects critical errors, warnings, and security threats
-- Provides detailed AI-powered recommendations
-
-### Setup
-1. Clone the repository
-   git clone https://github.com/leylamammadva/ai-log-analyzer.git
-2. Install dependencies
-   pip install -r requirements.txt
-3. Create .env file
-   GOOGLE_API_KEY=your_api_key_here
-4. Run the app
-   streamlit run log-analyzer/app.py
-
-### Demo
-![App Interface](screenshots/demo1.png)
-![AI Analysis](screenshots/demo2.png)
-
----
+Security-aware log triage with structured output, redaction of IPs and e-mails, prompt-injection defences, tests and a model comparison. See [log-analyzer/README.md](log-analyzer/README.md) for details.
 
 ## 😊 AI Sentiment Analyzer
-NLP-based sentiment analysis tool powered by Google Gemini AI.
-Analyzes text sentiment and detects key emotions with confidence scoring.
+NLP sentiment analysis with Google Gemini. Returns sentiment, key emotions and reasoning. The confidence score is reported by the model itself and is not a measured accuracy.
 
 **Tech:** Python, LangChain, Gemini API, Streamlit
 
-### Features
-- Analyzes text sentiment (Positive/Negative/Neutral)
-- Detects key emotions with confidence score
-- Detailed reasoning for each analysis
-
 ### Setup
-1. Install dependencies
-   pip install -r requirements.txt
-2. Create .env file
-   GOOGLE_API_KEY=your_api_key_here
-3. Run the app
-   streamlit run sentiment-analyzer/app.py
-
-### Demo
-![Sentiment Analyzer](screenshots/demo5.png)
+```bash
+git clone https://github.com/leylamammadva/ai-projects.git
+cd ai-projects
+pip install -r requirements.txt
+```
+Create a `.env` file with `GOOGLE_API_KEY=your_api_key_here` (never commit it), then run:
+```bash
+streamlit run sentiment-analyzer/app.py
+```

@@ -1,0 +1,19 @@
+name: log-analyzer-tests
+on:
+  push:
+    paths: ["log-analyzer/**", ".github/workflows/log-analyzer-tests.yml"]
+  pull_request:
+    paths: ["log-analyzer/**"]
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: log-analyzer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q

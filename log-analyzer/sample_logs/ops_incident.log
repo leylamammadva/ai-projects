@@ -1,0 +1,8 @@
+2024-01-17 03:10:01 INFO Nightly job started
+2024-01-17 03:12:44 WARNING Disk usage at 91% on /var
+2024-01-17 03:15:30 ERROR Database query timeout after 30s
+2024-01-17 03:15:31 ERROR Connection pool exhausted
+2024-01-17 03:16:02 CRITICAL Disk usage at 99% on /var, writes failing
+2024-01-17 03:17:45 INFO Service restarted by systemd
+2024-01-17 03:18:10 INFO Health check passed
+2024-01-17 03:20:00 INFO Nightly job finished

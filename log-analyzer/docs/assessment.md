@@ -1,0 +1,34 @@
+# Applicability assessment: AI-assisted log triage for a financial services SOC
+
+Status: draft based on a small prototype. Replace every [FILL] with your own measured result or judgement.
+
+## Use case
+A security operations team receives large volumes of logs (authentication, web, system). An LLM can give analysts a first-pass summary and a prioritized list of events with quoted evidence, so analysts spend less time reading routine lines.
+
+## Expected benefits
+- Faster first read of an incident log.
+- Consistent structure (severity, category, evidence line, next step).
+- Evidence quoting makes each finding checkable against the source.
+
+## What the prototype showed
+- Model comparison on [FILL: number] sample logs: see `results/model_comparison.md`.
+- [FILL: one sentence on which model found more key events and which invented more.]
+- [FILL: one sentence on how the model handled the log that contains an embedded instruction.]
+
+## Risks
+| Risk | Why it matters | Control in the prototype | Remaining gap |
+|---|---|---|---|
+| Data leakage | Logs contain IPs, e-mails and possibly secrets and are sent to a third-party API | IP and e-mail pseudonymization before sending | Usernames, hostnames and free-text secrets are not detected; contract and data-processing terms (GDPR) must be checked |
+| Prompt injection | Attackers can write text into logs that tries to steer the model | Log wrapped in data tags, rule to treat it as data, tag-escape neutralization, heuristic warning | Heuristic detection can miss attacks; no guarantee against injection |
+| Hallucination | The model may report events that are not in the log | Each finding must quote a log line; lines not found in the log are flagged | A real quoted line can still be misinterpreted |
+| Missed events | A threat that the model overlooks gives false reassurance | Analyst review remains required | Measured recall on a small sample only |
+| Cost and abuse | Very large uploads cost money | Size limit per analysis | No per-user rate limit |
+
+## Recommendation
+[FILL: for example: suitable as an analyst assistant for triage of non-sensitive or redacted logs, not as an automated decision maker. Next step: pilot on historical redacted logs with analyst feedback before any production use.]
+
+## Next steps
+1. Evaluate on a larger, analyst-labelled set of logs.
+2. Add detection of usernames and hostnames to redaction, or run a model inside the organization's own environment.
+3. Add tool use, for example a lookup of an IP's earlier failed logins, to move from a single prompt to an agent workflow.
+4. Add monitoring of model output quality over time.
