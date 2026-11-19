@@ -11,7 +11,7 @@ A security operations team receives large volumes of logs (authentication, web, 
 - Evidence quoting makes each finding checkable against the source.
 
 ## What the prototype showed
-- Model comparison: pending. Results will be added after a clean evaluation run with the final prompt.
+- Model comparison on 4 synthetic logs (final prompt, one run per log): `gemini-2.5-flash` matched 7 of 11 expected key events and `gemini-3.5-flash-lite` 8 of 11, both with no false alarms and no ungrounded findings. An earlier run gave 8 of 11 for `gemini-2.5-flash`, so the difference between the models is within run-to-run variation. Indicative only.
 - Manual runs with `gemini-2.5-flash` on four synthetic logs showed no false alarm on the operational log, but in one web-attack case the model quoted a less informative line, and severity ratings varied between runs.
 - On the log with an embedded instruction, the model did not follow it and reported it as a suspicious event in my test runs (single runs; the main defence is the code-level controls, not the model).
 

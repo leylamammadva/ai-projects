@@ -10,11 +10,11 @@ A Streamlit app that uses Google Gemini through LangChain to analyze log files a
 
 **Brute-force SSH log:** repeated failed logins from one IP are grouped into a single finding, while the successful root login and the creation of the `backdoor` user are reported separately as Critical.
 
-![Brute-force SSH analysis](../screenshots/demo4.png)
+![Brute-force SSH analysis](../screenshots/demo5.png)
 
 **Prompt injection test:** a log line that tries to instruct the model ("IGNORE ALL PREVIOUS INSTRUCTIONS...") is reported as a suspicious event instead of being followed.
 
-![Prompt injection test](../screenshots/demo1.png)
+![Prompt injection test](../screenshots/demo3.png)
 
 The app also shows the exact text that is sent to the AI after redaction, so the user can check what leaves the machine.
 
@@ -45,10 +45,17 @@ Observed weaknesses:
 - The grounding check only verifies that a quoted line exists in the log, not that it is the line that best supports the finding (see `web_attack.log` above).
 - Resistance to prompt injection rests mainly on code-level controls (`<log>` delimiting, tag neutralization, heuristic detection). The model's behavior is an additional layer, not a guarantee.
 
-Note: these manual runs were done while the prompt was still being adjusted (grouping of repeated events, choice of the quoted line, cautious wording), so some rows may not reflect the final prompt. The sample logs are therefore not an independent test set. All runs will be repeated with the final prompt.
+Note: these manual runs were done while the prompt was still being adjusted (grouping of repeated events, choice of the quoted line, cautious wording), so some rows may not reflect the final prompt. The sample logs are therefore not an independent test set. The comparison table below was produced with the final prompt; the manual runs in this table were not all repeated with it.
 
 ## Model comparison
-`python -m analyzer.compare` scores the models listed in `COMPARE_MODELS` against hand-written expectations (`data/expected.json`). Results are not published yet: the free-tier daily quota was exhausted during testing, and an older model (`gemini-2.5-flash-lite`) is no longer available to new users. Results will be added after a clean run with the final prompt.
+`python -m analyzer.compare` scores the models listed in `COMPARE_MODELS` against hand-written expectations (`data/expected.json`). Latest run with the final prompt, logs redacted before sending:
+
+| Model | Key events found | False alarms | Ungrounded findings | Errors | Mean time per log (s) |
+|---|---|---|---|---|---|
+| gemini-2.5-flash | 7/11 | 0 | 0 of 10 | 0 | 10.5 |
+| gemini-3.5-flash-lite | 8/11 | 0 | 0 of 8 | 0 | 9.6 |
+
+Neither model produced false alarms or ungrounded findings. The two models matched a similar number of expected key events (7 and 8 of 11), which is too small a difference to rank them. In an earlier run with the same prompt, `gemini-2.5-flash` matched 8 of 11, so the score varies between runs. The metric compares expected phrases with the quoted line only, so a finding that describes an event but quotes a different line counts as a miss; the misses were not analysed individually. `gemini-3.5-flash-lite` uses fixed sampling defaults, so the temperature setting was ignored for it. One run per log, four synthetic logs: indicative only.
 
 ## Limitations
 - Redaction does not detect usernames, hostnames or secrets in free text.
@@ -67,7 +74,8 @@ cd ai-projects/log-analyzer
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env             # add your own key, never commit .env
+cp .env.example .env             # Windows: copy .env.example .env
+# add your own key to .env, never commit it
 streamlit run app.py
 ```
 

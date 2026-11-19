@@ -2,7 +2,7 @@
 
 Run from the log-analyzer folder:   python -m analyzer.compare
 Set COMPARE_MODELS (comma separated) in .env, for example:
-COMPARE_MODELS=gemini-2.5-flash,gemini-2.5-flash-lite
+COMPARE_MODELS=gemini-2.5-flash,gemini-3.5-flash-lite
 Use model names that exist for your API key.
 """
 import json
